@@ -1,5 +1,6 @@
 ﻿using BlogCommunity.Api.Core.Interfaces;
 using BlogCommunity.Api.Data.Entities;
+using BlogCommunity.Api.Dtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,33 +19,60 @@ namespace BlogCommunity.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAllUser()
         {
-            throw new NotImplementedException();
+            var users = await _userService.GetAllUsersAsync();
+            return Ok(users);
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register(User user)
         {
-            throw new NotImplementedException();
+            var createdUser = await _userService.RegisterAsync(user);
+            if(createdUser == null)
+            {
+                return BadRequest("User already exist");  
+            }
+
+            return Ok(createdUser);
+                
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(User user)
+        public async Task<IActionResult> Login(LoginRequestDto request)
         {
-            throw new NotImplementedException();
+            var loggedInUser = await _userService.LoginAsync(request.UserName, request.Password);
+            if( loggedInUser == null)
+            {
+                return Unauthorized();
+            }
+            return Ok(loggedInUser);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult>Update(int id, User user)
         {
-            throw new NotImplementedException(); 
+            var succses = await _userService.UpdateUserAsync(id, user);
+            if (!succses)
+            {
+                return NotFound();
+            }
+
+            return Ok();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            throw new NotImplementedException(); 
+
+            var succses = await _userService.DeleteUserAsync(id);
+            if(!succses)
+            {
+                return NotFound();
+            }
+
+            return Ok();
+
         }
 
 
