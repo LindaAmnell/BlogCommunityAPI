@@ -1,5 +1,6 @@
 ﻿using BlogCommunity.Api.Data.Entities;
 using BlogCommunity.Api.Data.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlogCommunity.Api.Data.Repo
 {
@@ -13,19 +14,20 @@ namespace BlogCommunity.Api.Data.Repo
             _context = context;
         }
 
-        public Task AddCategoryAsync(Category category)
+        public async Task AddCategoryAsync(Category category)
         {
-            throw new NotImplementedException();
+                _context.Categories.Add(category);
+            await _context.SaveChangesAsync();
         }
 
-        public Task<List<Category>> GetAllAsync()
+        public async Task<List<Category>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Categories.ToListAsync();
         }
 
-        public Task<Category?> GetByIdAsync(int id)
+        public async Task<Category?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Categories.FindAsync(id);
         }
     }
 }

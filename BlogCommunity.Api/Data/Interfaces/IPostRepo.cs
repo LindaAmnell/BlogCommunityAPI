@@ -14,7 +14,7 @@ namespace BlogCommunity.Api.Data.Interfaces
         Task AddAsync(Post post);
         Task UpdateAsync(Post post);
 
-        Task Delete(int id);
+        Task DeleteAsync(int id);
 
 
 

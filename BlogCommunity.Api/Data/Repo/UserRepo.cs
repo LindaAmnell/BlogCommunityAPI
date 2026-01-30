@@ -1,5 +1,6 @@
 ﻿using BlogCommunity.Api.Data.Entities;
 using BlogCommunity.Api.Data.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlogCommunity.Api.Data.Repo
 {
@@ -12,39 +13,45 @@ namespace BlogCommunity.Api.Data.Repo
             _context = context;
         }
 
-        public Task AddUserAsync(User user)
+        public async Task AddUserAsync(User user)
         {
-            throw new NotImplementedException();
+            _context.Users.Add(user);
+        await _context.SaveChangesAsync();
         }
 
-        public Task DeleteUserAsync(int id)
+        public async Task DeleteUserAsync(int id)
         {
-            throw new NotImplementedException();
+           var user = await _context.Users.FindAsync(id);
+            if (user == null) return;
+
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
         }
 
-        public Task<List<User>> GetAllUsersAsync()
+        public async Task<List<User>> GetAllUsersAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Users.ToListAsync();
         }
 
-        public Task<User?> GetByIdAsync(int id)
+        public async Task<User?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Users.FindAsync(id);
         }
 
-        public Task<User?> GetByUserEmailAsync(string email)
+        public async Task<User?> GetByUserEmailAsync(string email)
         {
-            throw new NotImplementedException();
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
 
         public Task<User?> GetByUserNameAsync(string userName)
         {
-            throw new NotImplementedException();
+            return _context.Users.FirstOrDefaultAsync( u => u.UserName == userName);
         }
 
-        public Task UpdateUserAsync(User user)
+        public async Task UpdateUserAsync(User user)
         {
-            throw new NotImplementedException();
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
         }
     }
 }

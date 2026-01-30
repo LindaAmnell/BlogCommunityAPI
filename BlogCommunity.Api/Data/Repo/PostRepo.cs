@@ -1,5 +1,6 @@
 ﻿using BlogCommunity.Api.Data.Entities;
 using BlogCommunity.Api.Data.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlogCommunity.Api.Data.Repo
 {
@@ -13,39 +14,50 @@ namespace BlogCommunity.Api.Data.Repo
             _context = context;
         }
 
-        public Task AddAsync(Post post)
+        public async Task AddAsync(Post post)
         {
-            throw new NotImplementedException();
+            _context.Posts.Add(post);
+            await _context.SaveChangesAsync();
         }
 
-        public Task Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var post = await _context.Posts.FindAsync(id);
+            if (post == null) return;
+
+            _context.Posts.Remove(post);
+            await _context.SaveChangesAsync();
         }
 
-        public Task<List<Post>> GetAllAsync()
+        public async Task<List<Post>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Posts.ToListAsync();
         }
 
-        public Task<List<Post>> GetByCategoryAsync(int categoryId)
+        public async Task<List<Post>> GetByCategoryAsync(int categoryId)
         {
-            throw new NotImplementedException();
+            return await _context.Posts
+                 .Where(p => p.CategoryID == categoryId)
+                 .ToListAsync();
         }
 
-        public Task<Post?> GetByIdAsync(int id)
+        public async Task<Post?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Posts.FindAsync(id);
         }
 
-        public Task<List<Post>> GetByTitleAsync(string title)
+        public async Task<List<Post>> GetByTitleAsync(string title)
         {
-            throw new NotImplementedException();
+            return await _context.Posts
+                  .Where(p => p.Title.Contains(title))
+                  .ToListAsync();
+
         }
 
-        public Task UpdateAsync(Post post)
+        public async Task UpdateAsync(Post post)
         {
-            throw new NotImplementedException();
+            _context.Posts.Update(post);
+            await _context.SaveChangesAsync();
         }
     }
 }

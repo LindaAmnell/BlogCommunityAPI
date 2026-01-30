@@ -12,9 +12,10 @@ namespace BlogCommunity.Api.Data.Repo
             _context = context;
         }
 
-        public Task AddAsync(Comment comment)
+        public async Task AddAsync(Comment comment)
         {
-            throw new NotImplementedException();
+            _context.Comments.Add(comment);
+            await _context.SaveChangesAsync();
         }
     }
 }
