@@ -13,19 +13,19 @@ namespace BlogCommunity.Api.Core.Services
             _categoryRepo = categoryRepo;
         }
 
-        public Task AddCategoryAsync(Category category)
+        public async Task<List<Category>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _categoryRepo.GetAllAsync();
         }
 
-        public Task<List<Category>> GetAllAsync()
+        public async Task<Category?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _categoryRepo.GetByIdAsync(id);
         }
 
-        public Task<Category?> GetByIdAsync(int id)
+        public async Task AddCategoryAsync(Category category)
         {
-            throw new NotImplementedException();
+            await _categoryRepo.AddCategoryAsync(category);
         }
     }
 }

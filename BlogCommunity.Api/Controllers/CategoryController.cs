@@ -21,14 +21,20 @@ namespace BlogCommunity.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            throw new NotImplementedException();
+            var categories = await _categoryService.GetAllAsync();
+            return Ok(categories);
         }
 
         [HttpPost]
         public async Task<IActionResult> Add(Category category)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(category.CategoryName))
+                return BadRequest("Category name is required");
+
+            await _categoryService.AddCategoryAsync(category);
+            return CreatedAtAction(nameof(GetAll), category);
         }
+
 
 
     }
