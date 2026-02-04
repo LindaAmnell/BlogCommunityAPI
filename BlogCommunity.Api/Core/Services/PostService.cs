@@ -1,6 +1,9 @@
-﻿using BlogCommunity.Api.Core.Interfaces;
+﻿using BlogCommunity.Api.Core.Enum;
+using BlogCommunity.Api.Core.Interfaces;
 using BlogCommunity.Api.Data.Entities;
 using BlogCommunity.Api.Data.Interfaces;
+using BlogCommunity.Api.Data.Repo;
+using BlogCommunity.Api.Dtos.postDto;
 
 namespace BlogCommunity.Api.Core.Services
 {
@@ -9,46 +12,92 @@ namespace BlogCommunity.Api.Core.Services
 
         private readonly IPostRepo _postRepo;
         private readonly ICategoryRepo _categoryRepo;
+        private readonly IUserRepo _userRepo;
 
-        public PostService(IPostRepo postRepo, ICategoryRepo categoryRepo)
+        public PostService( IPostRepo postRepo,ICategoryRepo categoryRepo, IUserRepo userRepo)
         {
             _postRepo = postRepo;
             _categoryRepo = categoryRepo;
+            _userRepo = userRepo;
         }
 
-        public Task<bool> CreateAsync(Post post, int userId)
+        public async Task<List<Post>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _postRepo.GetAllAsync();
         }
 
-        public Task<bool> DeleteAsync(int postId, int userId)
+        public async Task<Post?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _postRepo.GetByIdAsync(id);
+        }
+        public async Task<List<Post>> SearchByTitleAsync(string title)
+        {
+            return await _postRepo.GetByTitleAsync(title);
         }
 
-        public Task<List<Post>> GetAllAsync()
+        public async Task<List<Post>> SearchByCategoryAsync(int categoryId)
         {
-            throw new NotImplementedException();
+            return await _postRepo.GetByCategoryAsync(categoryId);
         }
 
-        public Task<Post?> GetByIdAsync(int id)
+        public async Task<CreatePostResult> CreateAsync(Post post, int userId)
         {
-            throw new NotImplementedException();
+            var user = await _userRepo.GetByIdAsync(userId);
+            if (user == null)
+                return CreatePostResult.UserNotFound;
+
+            var category = await _categoryRepo.GetByIdAsync(post.CategoryID);
+            if (category == null)
+                return CreatePostResult.CategoryNotFound;
+
+            post.UserID = userId;
+            await _postRepo.AddAsync(post);
+
+            return CreatePostResult.Success;
         }
 
-        public Task<List<Post>> SearchByCategoryAsync(int categoryId)
+        public async Task<bool> UpdateAsync(int postId, UpdatePostDto dto, int userId)
         {
-            throw new NotImplementedException();
+            var existingPost = await _postRepo.GetByIdAsync(postId);
+            if (existingPost == null)
+                return false;
+
+            if (existingPost.UserID != userId)
+                return false;
+
+            if (!string.IsNullOrWhiteSpace(dto.Title))
+                existingPost.Title = dto.Title;
+
+            if (!string.IsNullOrWhiteSpace(dto.Text))
+                existingPost.Text = dto.Text;
+
+            if (dto.CategoryID.HasValue)
+                existingPost.CategoryID = dto.CategoryID.Value;
+
+            await _postRepo.UpdateAsync(existingPost);
+            return true;
+
         }
 
-        public Task<List<Post>> SearchByTitleAsync(string title)
+        public async Task<bool> DeleteAsync(int postId, int userID)
         {
-            throw new NotImplementedException();
+
+            var post = await _postRepo.GetByIdAsync(postId);
+            if (post == null) 
+            {
+                return false;
+            }
+
+            if (post.UserID != userID) 
+            {
+                return false;
+            }
+
+            await _postRepo.DeleteAsync(postId);
+            return true;
+
         }
 
-        public Task<bool> UpdateAsync(int postId, Post updatedPost, int userId)
-        {
-            throw new NotImplementedException();
-        }
+      
     }
 }

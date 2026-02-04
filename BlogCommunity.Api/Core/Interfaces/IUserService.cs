@@ -1,5 +1,5 @@
 ﻿using BlogCommunity.Api.Data.Entities;
-using BlogCommunity.Api.Dtos;
+using BlogCommunity.Api.Dtos.userDto;
 
 namespace BlogCommunity.Api.Core.Interfaces
 {
@@ -11,6 +11,8 @@ namespace BlogCommunity.Api.Core.Interfaces
         Task<User?> LoginAsync(string userName, string password);
         Task<bool> UpdateUserAsync(int userId, UpdateUserDto updatedUser);
         Task<bool> DeleteUserAsync(int userId);
+
+        Task<User> GetUserById(int userId);
 
     }
 }

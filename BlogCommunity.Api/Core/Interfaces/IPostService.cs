@@ -1,4 +1,6 @@
-﻿using BlogCommunity.Api.Data.Entities;
+﻿using BlogCommunity.Api.Core.Enum;
+using BlogCommunity.Api.Data.Entities;
+using BlogCommunity.Api.Dtos.postDto;
 
 namespace BlogCommunity.Api.Core.Interfaces
 {
@@ -11,8 +13,9 @@ namespace BlogCommunity.Api.Core.Interfaces
         Task<List<Post>> SearchByTitleAsync(string title);
         Task<List<Post>> SearchByCategoryAsync(int categoryId);
 
-        Task<bool> CreateAsync(Post post, int userId);
-        Task<bool> UpdateAsync(int postId, Post updatedPost, int userId);
+        Task<CreatePostResult> CreateAsync(Post post, int userId);
+
+        Task<bool> UpdateAsync(int postId, UpdatePostDto updatedPost, int userId);
         Task<bool> DeleteAsync(int postId, int userId);
     }
 }

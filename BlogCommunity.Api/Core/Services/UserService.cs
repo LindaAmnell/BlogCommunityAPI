@@ -1,7 +1,7 @@
 ﻿using BlogCommunity.Api.Core.Interfaces;
 using BlogCommunity.Api.Data.Entities;
 using BlogCommunity.Api.Data.Interfaces;
-using BlogCommunity.Api.Dtos;
+using BlogCommunity.Api.Dtos.userDto;
 using System.Reflection.Metadata.Ecma335;
 
 namespace BlogCommunity.Api.Core.Services
@@ -19,6 +19,12 @@ namespace BlogCommunity.Api.Core.Services
         public async Task<List<User>> GetAllUsersAsync()
         {
            return await _userRepo.GetAllUsersAsync(); 
+        }
+
+
+        public async Task<User> GetUserById(int userId)
+        {
+            return await _userRepo.GetByIdAsync(userId);
         }
 
         public async Task<User?> LoginAsync(string userName, string password)
@@ -71,5 +77,7 @@ namespace BlogCommunity.Api.Core.Services
             await _userRepo.DeleteUserAsync(userId);
             return true;
         }
+
+        
     }
 }

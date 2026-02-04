@@ -1,4 +1,4 @@
-﻿namespace BlogCommunity.Api.Dtos
+﻿namespace BlogCommunity.Api.Dtos.userDto
 {
     public class LoginRequestDto
     {

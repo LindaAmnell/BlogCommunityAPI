@@ -1,7 +1,9 @@
 ﻿using BlogCommunity.Api.Core.Interfaces;
 using BlogCommunity.Api.Data.Entities;
 using BlogCommunity.Api.Dtos;
+using BlogCommunity.Api.Dtos.userDto;
 using Microsoft.AspNetCore.Http;
+using BlogCommunity.Api.Core.Enum;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlogCommunity.Api.Controllers
