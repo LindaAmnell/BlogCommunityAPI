@@ -1,6 +1,7 @@
 ﻿using BlogCommunity.Api.Core.Interfaces;
 using BlogCommunity.Api.Data.Entities;
 using BlogCommunity.Api.Data.Interfaces;
+using BlogCommunity.Api.Dtos;
 using System.Reflection.Metadata.Ecma335;
 
 namespace BlogCommunity.Api.Core.Services
@@ -41,19 +42,26 @@ namespace BlogCommunity.Api.Core.Services
 
         }
 
-        public async Task<bool> UpdateUserAsync(int userId, User updatedUser)
+        public async Task<bool> UpdateUserAsync(int userId, UpdateUserDto dto)
         {
-            var existingUser = await _userRepo.GetByIdAsync(userId);
+            var user = await _userRepo.GetByIdAsync(userId);
+            if (user == null)
+                return false;
 
-            if (existingUser == null) return false;
+            if (!string.IsNullOrWhiteSpace(dto.UserName))
+                user.UserName = dto.UserName;
 
-            existingUser.UserName = updatedUser.UserName;
-            existingUser.Password = updatedUser.Password;
-            existingUser.Email = updatedUser.Email;
+            if (!string.IsNullOrWhiteSpace(dto.Email))
+                user.Email = dto.Email;
 
-            await  _userRepo.UpdateUserAsync(existingUser);
+            if (!string.IsNullOrWhiteSpace(dto.Password))
+                user.Password = dto.Password;
+
+            await _userRepo.UpdateUserAsync(user);
             return true;
         }
+
+
 
         public async Task<bool> DeleteUserAsync(int userId)
         {

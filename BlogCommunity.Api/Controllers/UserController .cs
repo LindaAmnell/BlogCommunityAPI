@@ -29,37 +29,43 @@ namespace BlogCommunity.Api.Controllers
         public async Task<IActionResult> Register(User user)
         {
             var createdUser = await _userService.RegisterAsync(user);
-            if(createdUser == null)
-            {
-                return BadRequest("User already exist");  
-            }
+            if (createdUser == null)
+                return BadRequest("User already exists");
 
-            return Ok(createdUser);
-                
+            var response = new UserResponseDto
+            {
+                Id = createdUser.UserID,
+                UserName = createdUser.UserName,
+                Email = createdUser.Email
+            };
+
+            return Ok(response);
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginRequestDto request)
         {
-            var loggedInUser = await _userService.LoginAsync(request.UserName, request.Password);
-            if( loggedInUser == null)
+            var user = await _userService.LoginAsync(request.UserName, request.Password);
+            if (user == null)
+                return Unauthorized("Invalid username or password");
+
+            return Ok(new
             {
-                return Unauthorized();
-            }
-            return Ok(loggedInUser);
+                userId = user.UserID,
+                userName = user.UserName
+            });
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult>Update(int id, User user)
+        public async Task<IActionResult> Update(int id, UpdateUserDto dto)
         {
-            var succses = await _userService.UpdateUserAsync(id, user);
-            if (!succses)
-            {
+            var success = await _userService.UpdateUserAsync(id, dto);
+            if (!success)
                 return NotFound();
-            }
 
-            return Ok();
+            return NoContent();
         }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
