@@ -19,6 +19,8 @@ namespace BlogCommunity.Api.Controllers
             _postService = postService;
         }
 
+        // -------------------- GET ALL POSTS --------------------
+
         [HttpGet]
         #region Doc
         [SwaggerOperation(
@@ -33,6 +35,8 @@ namespace BlogCommunity.Api.Controllers
             return Ok(posts);
 
         }
+
+        // -------------------- GET POST BY ID --------------------
 
         [HttpGet("{id}")]
         #region Doc
@@ -53,6 +57,9 @@ namespace BlogCommunity.Api.Controllers
             return Ok(post);
         }
 
+        // -------------------- SEARCH BY TITLE --------------------
+
+
         [HttpGet("search/title")]
         #region Doc
         [SwaggerOperation(
@@ -66,6 +73,8 @@ namespace BlogCommunity.Api.Controllers
           var posts = await _postService.SearchByTitleAsync(title);
             return Ok(posts);
         }
+
+        // -------------------- SEARCH BY CATEGORY --------------------
 
         [HttpGet("search/category")]
         #region Doc
@@ -81,6 +90,7 @@ namespace BlogCommunity.Api.Controllers
             return Ok(posts);
         }
 
+        // -------------------- CREATE POST --------------------
 
         [HttpPost]
         #region Doc
@@ -119,6 +129,9 @@ namespace BlogCommunity.Api.Controllers
             };
         }
 
+        // -------------------- UPDATE POST --------------------
+
+
         [HttpPut("{id}")]
         #region Doc
         [SwaggerOperation(
@@ -139,6 +152,8 @@ namespace BlogCommunity.Api.Controllers
 
             return NoContent();
         }
+
+        // -------------------- DELETE POST --------------------
 
         [HttpDelete("{id}")]
         #region Doc

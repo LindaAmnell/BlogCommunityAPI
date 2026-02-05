@@ -20,6 +20,7 @@ namespace BlogCommunity.Api.Controllers
         {
             _userService = userService;
         }
+        // -------------------- GET ALL USERS --------------------
 
         [HttpGet]
         #region Doc
@@ -42,6 +43,8 @@ namespace BlogCommunity.Api.Controllers
 
             return Ok(response);
         }
+
+        // -------------------- REGISTER USER --------------------
 
         [HttpPost("register")]
         #region Doc
@@ -70,6 +73,8 @@ namespace BlogCommunity.Api.Controllers
             return StatusCode(StatusCodes.Status201Created, response);
         }
 
+        // -------------------- LOGIN --------------------
+
         [HttpPost("login")]
         #region Doc
         [SwaggerOperation(
@@ -92,6 +97,9 @@ namespace BlogCommunity.Api.Controllers
                 userName = user.UserName
             });
         }
+
+        // -------------------- UPDATE USER --------------------
+
         [HttpPut("{id}")]
         #region Doc
         [SwaggerOperation(
@@ -110,6 +118,7 @@ namespace BlogCommunity.Api.Controllers
             return NoContent();
         }
 
+        // -------------------- DELETE USER --------------------
 
         [HttpDelete("{id}")]
         #region Doc
