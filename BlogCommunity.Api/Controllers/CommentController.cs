@@ -4,6 +4,7 @@ using BlogCommunity.Api.Data.Entities;
 using BlogCommunity.Api.Dtos.CommentDto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace BlogCommunity.Api.Controllers
 {
@@ -19,6 +20,15 @@ namespace BlogCommunity.Api.Controllers
         }
 
         [HttpPost]
+        #region Doc
+        [SwaggerOperation(
+            Summary = "Add comment to a post",
+            Description = "Creates a comment on a specific post. User must exist and cannot comment on their own post"
+        )]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        #endregion
         public async Task<IActionResult> Add(
            [FromQuery] int postId,
            [FromQuery] int userId,

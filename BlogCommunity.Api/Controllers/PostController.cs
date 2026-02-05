@@ -4,6 +4,7 @@ using BlogCommunity.Api.Data.Entities;
 using BlogCommunity.Api.Dtos.postDto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace BlogCommunity.Api.Controllers
 {
@@ -19,6 +20,13 @@ namespace BlogCommunity.Api.Controllers
         }
 
         [HttpGet]
+        #region Doc
+        [SwaggerOperation(
+            Summary = "Get all posts",
+            Description = "Returns a list of all blog posts"
+        )]
+        [ProducesResponseType(typeof(List<Post>), StatusCodes.Status200OK)]
+        #endregion
         public async Task<IActionResult> GetAll() 
         {
            var posts = await _postService.GetAllAsync();
@@ -27,6 +35,14 @@ namespace BlogCommunity.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        #region Doc
+        [SwaggerOperation(
+            Summary = "Get post by id",
+            Description = "Returns a single blog post by id"
+        )]
+        [ProducesResponseType(typeof(Post), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        #endregion
         public async Task<IActionResult> GetById(int id)
         {
             var post = await _postService.GetByIdAsync(id);
@@ -38,6 +54,13 @@ namespace BlogCommunity.Api.Controllers
         }
 
         [HttpGet("search/title")]
+        #region Doc
+        [SwaggerOperation(
+            Summary = "Search posts by title",
+            Description = "Returns all posts that contain the given title"
+        )]
+        [ProducesResponseType(typeof(List<Post>), StatusCodes.Status200OK)]
+        #endregion
         public async Task<IActionResult> SearchByTitle(string title)
         {
           var posts = await _postService.SearchByTitleAsync(title);
@@ -45,12 +68,30 @@ namespace BlogCommunity.Api.Controllers
         }
 
         [HttpGet("search/category")]
+        #region Doc
+        [SwaggerOperation(
+            Summary = "Search posts by category",
+            Description = "Returns all posts for a specific category id"
+        )]
+        [ProducesResponseType(typeof(List<Post>), StatusCodes.Status200OK)]
+        #endregion
         public async Task<IActionResult> SearchByCategory(int categoryId)
         {
             var posts = await _postService.SearchByCategoryAsync(categoryId);
             return Ok(posts);
         }
+
+
         [HttpPost]
+        #region Doc
+        [SwaggerOperation(
+            Summary = "Create a new post",
+            Description = "Creates a new blog post for a logged in user"
+        )]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        #endregion
         public async Task<IActionResult> Create(
             [FromBody] CreatePostDto dto,
             [FromQuery] int userId)
@@ -79,6 +120,14 @@ namespace BlogCommunity.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        #region Doc
+        [SwaggerOperation(
+            Summary = "Update post",
+            Description = "Updates an existing post. Only the owner can update the post"
+        )]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+        #endregion
         public async Task<IActionResult> Update(
             int id,
             [FromBody] UpdatePostDto dto,
@@ -92,6 +141,15 @@ namespace BlogCommunity.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        #region Doc
+        [SwaggerOperation(
+            Summary = "Delete post",
+            Description = "Deletes a post. Only the owner can delete the post"
+        )]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+        #endregion
+
         public async Task<IActionResult> Delete(int id, [FromQuery] int userId)
         {
             var success = await _postService.DeleteAsync(id, userId);
