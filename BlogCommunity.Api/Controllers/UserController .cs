@@ -1,10 +1,11 @@
-﻿using BlogCommunity.Api.Core.Interfaces;
+﻿using BlogCommunity.Api.Core.Enum;
+using BlogCommunity.Api.Core.Interfaces;
 using BlogCommunity.Api.Data.Entities;
 using BlogCommunity.Api.Dtos;
 using BlogCommunity.Api.Dtos.userDto;
 using Microsoft.AspNetCore.Http;
-using BlogCommunity.Api.Core.Enum;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace BlogCommunity.Api.Controllers
 {
@@ -21,13 +22,37 @@ namespace BlogCommunity.Api.Controllers
         }
 
         [HttpGet]
+        #region Doc
+        [SwaggerOperation(
+            Summary = "Get all users",
+            Description = "Returns a list of all registered users"
+        )]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        #endregion
         public async Task<IActionResult> GetAllUser()
         {
             var users = await _userService.GetAllUsersAsync();
-            return Ok(users);
+
+            var response = users.Select(u => new UserResponseDto
+            {
+                Id = u.UserID,
+                UserName = u.UserName,
+                Email = u.Email
+            });
+
+            return Ok(response);
         }
 
         [HttpPost("register")]
+        #region Doc
+        [SwaggerOperation(
+            Summary = "Register a new user",
+            Description = "Creates a new user account using username, email and password"
+        )]
+        [ProducesResponseType(typeof(UserResponseDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest, Description = "User already exists")]
+
+        #endregion
         public async Task<IActionResult> Register(User user)
         {
             var createdUser = await _userService.RegisterAsync(user);
@@ -41,10 +66,20 @@ namespace BlogCommunity.Api.Controllers
                 Email = createdUser.Email
             };
 
-            return Ok(response);
+
+            return StatusCode(StatusCodes.Status201Created, response);
         }
 
         [HttpPost("login")]
+        #region Doc
+        [SwaggerOperation(
+            Summary = "Login user",
+            Description = "Logs in a user by validating username and password"
+        )]
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized, Description = "Invalid username or password")]
+
+        #endregion
         public async Task<IActionResult> Login(LoginRequestDto request)
         {
             var user = await _userService.LoginAsync(request.UserName, request.Password);
@@ -57,30 +92,41 @@ namespace BlogCommunity.Api.Controllers
                 userName = user.UserName
             });
         }
-
         [HttpPut("{id}")]
+        #region Doc
+        [SwaggerOperation(
+            Summary = "Update user",
+            Description = "Updates username, email or password for an existing user"
+        )]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        #endregion
         public async Task<IActionResult> Update(int id, UpdateUserDto dto)
         {
             var success = await _userService.UpdateUserAsync(id, dto);
             if (!success)
-                return NotFound();
+                return NotFound("User not found");
 
             return NoContent();
         }
 
 
         [HttpDelete("{id}")]
+        #region Doc
+        [SwaggerOperation(
+        Summary = "Delete user",
+        Description = "Deletes a user by id"
+  )]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        #endregion
         public async Task<IActionResult> Delete(int id)
         {
-
-            var succses = await _userService.DeleteUserAsync(id);
-            if(!succses)
-            {
-                return NotFound();
-            }
+            var success = await _userService.DeleteUserAsync(id);
+            if (!success)
+                return NotFound("User not found");
 
             return Ok();
-
         }
 
 
